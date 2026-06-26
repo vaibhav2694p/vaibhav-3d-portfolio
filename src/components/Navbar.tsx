@@ -164,8 +164,8 @@ export default function Navbar() {
 
       <div
         ref={overlayRef}
-        className="lg:hidden fixed inset-0 top-0 bg-cyber-black/95 backdrop-blur-2xl flex flex-col items-center justify-center -translate-y-full opacity-0"
-        style={{ pointerEvents: 'none', zIndex: -1 }}
+        className="lg:hidden fixed inset-0 top-0 bg-cyber-black/95 backdrop-blur-2xl flex flex-col items-center justify-center"
+        style={{ pointerEvents: 'none', zIndex: -1, transform: 'translateY(-100%)', opacity: 0 }}
       >
         <div className="flex flex-col items-center gap-8">
           {navLinks.map((link, i) => (

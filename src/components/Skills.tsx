@@ -64,20 +64,20 @@ export default function Skills() {
         <h2 className="section-title text-white mb-4">
           Technical <span className="neon-text">Skills</span>
         </h2>
-        <p className="text-gray-400 mb-12 max-w-2xl">
+        <p className="text-gray-400 mb-12 max-w-2xl text-sm sm:text-base">
           A comprehensive toolkit built over 10+ years of hands-on experience across IT infrastructure, cloud operations, cybersecurity, and emerging AI technologies.
         </p>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {SKILL_CATEGORIES.map((cat, index) => (
-            <div key={`${cat.category}-${index}`} className="skill-category glass-card-hover p-6">
-              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-neon-cyan" />
+            <div key={`${cat.category}-${index}`} className="skill-category glass-card-hover p-5 sm:p-6 group hoverable">
+              <h3 className="text-base sm:text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-neon-cyan group-hover:shadow-[0_0_8px_rgba(0,212,255,0.8)] transition-shadow" />
                 {cat.category}
               </h3>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-1.5 sm:gap-2">
                 {cat.skills.map((skill, i) => (
-                  <span key={`${skill}-${i}`} className="skill-badge-anim skill-badge">
+                  <span key={`${skill}-${i}`} className="skill-badge-anim skill-badge text-xs sm:text-sm">
                     {skill}
                   </span>
                 ))}

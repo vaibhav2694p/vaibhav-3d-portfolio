@@ -268,14 +268,14 @@ function CyberCharacter() {
       <CyberLimb position={[-0.3, 0.2, 0]} length={1.2} isLeg />
       <CyberLimb position={[0.3, 0.2, 0]} length={1.2} isLeg />
       {/* Floating orbs */}
-      <FloatingOrb position={[-1.5, 2.5, 0.5]} color="#00d4ff" speed={1.2} size={0.15} />
-      <FloatingOrb position={[1.5, 1.5, -0.5]} color="#7c3aed" speed={0.8} size={0.2} />
-      <FloatingOrb position={[0.8, 3.2, 0.8]} color="#ec4899" speed={1.5} size={0.1} />
-      <FloatingOrb position={[-0.8, 0.5, 1.0]} color="#0066ff" speed={0.6} size={0.12} />
+      <FloatingOrb position={[-1.8, 2.8, 0.5]} color="#00d4ff" speed={1.2} size={0.18} />
+      <FloatingOrb position={[1.8, 1.5, -0.5]} color="#7c3aed" speed={0.8} size={0.22} />
+      <FloatingOrb position={[0.8, 3.5, 0.8]} color="#ec4899" speed={1.5} size={0.12} />
+      <FloatingOrb position={[-0.8, 0.5, 1.2]} color="#0066ff" speed={0.6} size={0.15} />
       {/* Rotating rings */}
-      <RotatingRing radius={2.0} color="#00d4ff" speed={0.3} position={[0, 1.5, 0]} />
-      <RotatingRing radius={2.3} color="#7c3aed" speed={-0.2} position={[0, 1.5, 0]} />
-      <RotatingRing radius={2.6} color="#0066ff" speed={0.15} position={[0, 1.5, 0]} />
+      <RotatingRing radius={2.2} color="#00d4ff" speed={0.3} position={[0, 1.5, 0]} />
+      <RotatingRing radius={2.6} color="#7c3aed" speed={-0.2} position={[0, 1.5, 0]} />
+      <RotatingRing radius={3.0} color="#0066ff" speed={0.15} position={[0, 1.5, 0]} />
       {/* Platform */}
       <Platform />
     </group>
@@ -304,16 +304,17 @@ export default function Character3D() {
         camera={{ position: [0, 1.5, 6], fov: 50 }}
         gl={{ antialias: true, alpha: true }}
         style={{ background: 'transparent' }}
+        dpr={[1, 1.5]}
       >
         <Scene />
         <OrbitControls
           enableZoom={false}
           enablePan={false}
-          rotateSpeed={0.3}
+          rotateSpeed={0.5}
           maxPolarAngle={Math.PI / 2}
           minPolarAngle={Math.PI / 4}
-          maxAzimuthAngle={Math.PI / 4}
-          minAzimuthAngle={-Math.PI / 4}
+          maxAzimuthAngle={Math.PI / 2}
+          minAzimuthAngle={-Math.PI / 2}
         />
       </Canvas>
     </div>

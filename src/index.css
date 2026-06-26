@@ -224,17 +224,24 @@
 .canvas-container {
   position: fixed;
   top: 0;
-  left: 0;
-  width: 100vw;
+  right: 0;
+  width: 55vw;
   height: 100vh;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.6;
+  opacity: 0.7;
 }
 
 @media (max-width: 1024px) {
   .canvas-container {
-    opacity: 0.3;
+    width: 100vw;
+    opacity: 0.25;
+  }
+}
+
+@media (max-width: 640px) {
+  .canvas-container {
+    opacity: 0.15;
   }
 }
 

@@ -45,44 +45,36 @@ function App() {
     <ErrorBoundary>
       {loading && <LoadingScreen onFinish={() => setLoading(false)} />}
 
-      <div className={`relative min-h-screen bg-cyber-black text-white overflow-x-hidden transition-opacity duration-500 ${loading ? 'opacity-0' : 'opacity-100'}`}>
+      <div className={`relative min-h-screen bg-cyber-black text-white transition-opacity duration-500 ${loading ? 'opacity-0' : 'opacity-100'}`}>
         <CustomCursor />
 
         <Suspense fallback={null}>
           <Character3D />
         </Suspense>
 
-        <div className="relative z-10 lg:w-[55%]">
-          <Navbar />
-          <main>
-            <Hero />
-            <About />
-            <WorkExperience />
-            <Skills />
-            <Suspense fallback={<div className="section-container"><div className="h-40 animate-pulse bg-cyber-gray rounded-2xl" /></div>}>
-              <GitHubProjects />
-            </Suspense>
-            <Suspense fallback={null}>
-              <Certifications />
-            </Suspense>
-            <Suspense fallback={null}>
-              <Achievements />
-            </Suspense>
-            <Suspense fallback={null}>
-              <LinkedInStats />
-            </Suspense>
-            <Suspense fallback={null}>
-              <Contact />
-            </Suspense>
-          </main>
-          <Footer />
-        </div>
-
-        <div className="fixed inset-0 pointer-events-none z-0">
-          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-neon-cyan/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 right-0 w-[400px] h-[400px] bg-neon-purple/5 rounded-full blur-3xl" />
-          <div className="absolute top-1/2 left-0 w-[300px] h-[300px] bg-neon-blue/5 rounded-full blur-3xl" />
-        </div>
+        <Navbar />
+        <main>
+          <Hero />
+          <About />
+          <WorkExperience />
+          <Skills />
+          <Suspense fallback={<div className="section-container"><div className="h-40 animate-pulse bg-cyber-gray rounded-2xl" /></div>}>
+            <GitHubProjects />
+          </Suspense>
+          <Suspense fallback={null}>
+            <Certifications />
+          </Suspense>
+          <Suspense fallback={null}>
+            <Achievements />
+          </Suspense>
+          <Suspense fallback={null}>
+            <LinkedInStats />
+          </Suspense>
+          <Suspense fallback={null}>
+            <Contact />
+          </Suspense>
+        </main>
+        <Footer />
       </div>
     </ErrorBoundary>
   );

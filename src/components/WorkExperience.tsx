@@ -33,7 +33,7 @@ export default function WorkExperience() {
       });
 
       const dots = sectionRef.current!.querySelectorAll('.timeline-dot');
-      dots.forEach((dot, i) => {
+      dots.forEach((dot) => {
         gsap.fromTo(
           dot,
           { scale: 0 },

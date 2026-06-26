@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { FaServer, FaUsers, FaGlobe, FaShieldAlt, FaLock, FaAward } from 'react-icons/fa';
 import { ACHIEVEMENTS } from '../data/profileData';
 import gsap from 'gsap';
@@ -15,43 +15,6 @@ const iconMap: Record<string, React.ReactNode> = {
   FaAward: <FaAward className="w-6 h-6" />,
 };
 
-function AnimatedCounter({ target, suffix = '' }: { target: string; suffix?: string }) {
-  const [count, setCount] = useState(0);
-  const ref = useRef<HTMLSpanElement>(null);
-  const numericTarget = parseInt(target.replace(/\D/g, '')) || 0;
-
-  useEffect(() => {
-    if (!ref.current) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          let start = 0;
-          const duration = 2000;
-          const step = numericTarget / (duration / 16);
-
-          const timer = setInterval(() => {
-            start += step;
-            if (start >= numericTarget) {
-              setCount(numericTarget);
-              clearInterval(timer);
-            } else {
-              setCount(Math.floor(start));
-            }
-          }, 16);
-
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.5 }
-    );
-
-    observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [numericTarget]);
-
-  return <span ref={ref}>{count}{suffix}</span>;
-}
 
 export default function Achievements() {
   const sectionRef = useRef<HTMLElement>(null);

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useRef, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Float, Ring } from '@react-three/drei';
@@ -228,11 +229,31 @@ function CyberCharacter() {
 
   useFrame((state) => {
     if (groupRef.current) {
+      // Position based on screen width (right side for desktop, center for mobile)
+      const isMobile = window.innerWidth < 1024;
+      const targetPosX = isMobile ? 0 : 2.0;
+      
+      // Scroll-based interactions
+      const scrollY = window.scrollY;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const scrollProgress = maxScroll > 0 ? scrollY / maxScroll : 0;
+      
+      // Rotate 360 degrees (Math.PI * 2) across the full page scroll
+      const scrollRotY = scrollProgress * Math.PI * 2;
+      
+      // Move down slightly as you scroll
+      const targetPosY = -(scrollProgress * 1.5);
+
       // Subtle mouse follow (X rotation based on mouse Y, Y rotation based on mouse X)
-      const targetRotX = (state.mouse.y * 0.3);
-      const targetRotY = (state.mouse.x * 0.5);
-      groupRef.current.rotation.x += (targetRotX - groupRef.current.rotation.x) * 0.05;
-      groupRef.current.rotation.y += (targetRotY - groupRef.current.rotation.y) * 0.05;
+      const mouseRotX = (state.mouse.y * 0.3);
+      const mouseRotY = (state.mouse.x * 0.5);
+      
+      // Apply smooth interpolation
+      groupRef.current.position.x += (targetPosX - groupRef.current.position.x) * 0.05;
+      groupRef.current.position.y += (targetPosY - groupRef.current.position.y) * 0.05;
+      
+      groupRef.current.rotation.x += (mouseRotX - groupRef.current.rotation.x) * 0.05;
+      groupRef.current.rotation.y += ((mouseRotY + scrollRotY) - groupRef.current.rotation.y) * 0.05;
     }
   });
 

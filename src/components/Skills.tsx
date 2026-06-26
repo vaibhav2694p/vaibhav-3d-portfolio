@@ -27,7 +27,6 @@ export default function Skills() {
             scrollTrigger: {
               trigger: card,
               start: 'top 85%',
-              toggleActions: 'play none none none',
             },
           }
         );
@@ -47,7 +46,6 @@ export default function Skills() {
             scrollTrigger: {
               trigger: badge,
               start: 'top 90%',
-              toggleActions: 'play none none none',
             },
           }
         );
@@ -59,7 +57,7 @@ export default function Skills() {
 
   return (
     <section id="skills" ref={sectionRef} className="section-container">
-      <div className="max-w-6xl">
+      <div className="max-w-6xl mx-auto">
         <div className="mb-4">
           <span className="text-neon-cyan text-sm font-mono font-medium tracking-wider uppercase">Expertise</span>
         </div>
@@ -72,14 +70,14 @@ export default function Skills() {
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {SKILL_CATEGORIES.map((cat, index) => (
-            <div key={index} className="skill-category glass-card-hover p-6">
+            <div key={`${cat.category}-${index}`} className="skill-category glass-card-hover p-6">
               <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-neon-cyan" />
                 {cat.category}
               </h3>
               <div className="flex flex-wrap gap-2">
                 {cat.skills.map((skill, i) => (
-                  <span key={i} className="skill-badge-anim skill-badge">
+                  <span key={`${skill}-${i}`} className="skill-badge-anim skill-badge">
                     {skill}
                   </span>
                 ))}

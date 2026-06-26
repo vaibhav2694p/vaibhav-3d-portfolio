@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { FaEnvelope, FaMapMarkerAlt, FaPhone, FaLinkedin, FaGithub, FaBlog, FaPaperPlane, FaCheckCircle } from 'react-icons/fa';
+import { FaEnvelope, FaMapMarkerAlt, FaPhone, FaLinkedin, FaGithub, FaBlog, FaPaperPlane, FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
 import { PROFILE } from '../data/profileData';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -9,6 +9,7 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Contact() {
   const sectionRef = useRef<HTMLElement>(null);
   const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
@@ -29,7 +30,6 @@ export default function Contact() {
             scrollTrigger: {
               trigger: el,
               start: 'top 85%',
-              toggleActions: 'play none none none',
             },
           }
         );
@@ -39,19 +39,37 @@ export default function Contact() {
     return () => ctx.revert();
   }, []);
 
+  const validate = () => {
+    const newErrors: Record<string, string> = {};
+    if (!formData.name.trim()) newErrors.name = 'Name is required';
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Invalid email format';
+    }
+    if (!formData.message.trim()) {
+      newErrors.message = 'Message is required';
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = 'Message must be at least 10 characters';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate form submission
+    if (!validate()) return;
     setSubmitted(true);
     setTimeout(() => {
       setSubmitted(false);
       setFormData({ name: '', email: '', message: '' });
+      setErrors({});
     }, 3000);
   };
 
   return (
     <section id="contact" ref={sectionRef} className="section-container">
-      <div className="max-w-6xl">
+      <div className="max-w-6xl mx-auto">
         <div className="scroll-reveal mb-4">
           <span className="text-neon-cyan text-sm font-mono font-medium tracking-wider uppercase">Get in Touch</span>
         </div>
@@ -63,7 +81,6 @@ export default function Contact() {
         </p>
 
         <div className="grid lg:grid-cols-2 gap-12">
-          {/* Contact Info */}
           <div className="scroll-reveal space-y-6">
             <div className="glass-card-hover p-6 flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-neon-cyan/10 flex items-center justify-center flex-shrink-0">
@@ -99,7 +116,6 @@ export default function Contact() {
               </div>
             </div>
 
-            {/* Social Links */}
             <div className="glass-card p-6">
               <p className="text-sm text-gray-500 mb-4">Follow Me</p>
               <div className="flex gap-3">
@@ -134,45 +150,71 @@ export default function Contact() {
             </div>
           </div>
 
-          {/* Contact Form */}
           <div className="scroll-reveal">
-            <form onSubmit={handleSubmit} className="glass-card p-8 space-y-6">
+            <form onSubmit={handleSubmit} className="glass-card p-8 space-y-6" noValidate>
               <h3 className="text-xl font-bold text-white mb-2">Send a Message</h3>
 
               <div>
-                <label className="block text-sm text-gray-400 mb-2">Name</label>
+                <label htmlFor="name" className="block text-sm text-gray-400 mb-2">Name</label>
                 <input
+                  id="name"
                   type="text"
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-cyber-gray border border-cyber-border text-white placeholder-gray-500 focus:border-neon-cyan focus:outline-none focus:ring-1 focus:ring-neon-cyan/50 transition-all"
+                  onChange={(e) => { setFormData({ ...formData, name: e.target.value }); if (errors.name) setErrors({ ...errors, name: '' }); }}
+                  className={`w-full px-4 py-3 rounded-xl bg-cyber-gray border text-white placeholder-gray-500 focus:outline-none focus:ring-1 transition-all ${errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500/50' : 'border-cyber-border focus:border-neon-cyan focus:ring-neon-cyan/50'}`}
                   placeholder="Your name"
                   required
+                  aria-invalid={!!errors.name}
+                  aria-describedby={errors.name ? 'name-error' : undefined}
                 />
+                {errors.name && (
+                  <p id="name-error" className="flex items-center gap-1 text-red-400 text-xs mt-1">
+                    <FaExclamationCircle className="w-3 h-3" />
+                    {errors.name}
+                  </p>
+                )}
               </div>
 
               <div>
-                <label className="block text-sm text-gray-400 mb-2">Email</label>
+                <label htmlFor="email" className="block text-sm text-gray-400 mb-2">Email</label>
                 <input
+                  id="email"
                   type="email"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-cyber-gray border border-cyber-border text-white placeholder-gray-500 focus:border-neon-cyan focus:outline-none focus:ring-1 focus:ring-neon-cyan/50 transition-all"
+                  onChange={(e) => { setFormData({ ...formData, email: e.target.value }); if (errors.email) setErrors({ ...errors, email: '' }); }}
+                  className={`w-full px-4 py-3 rounded-xl bg-cyber-gray border text-white placeholder-gray-500 focus:outline-none focus:ring-1 transition-all ${errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500/50' : 'border-cyber-border focus:border-neon-cyan focus:ring-neon-cyan/50'}`}
                   placeholder="your@email.com"
                   required
+                  aria-invalid={!!errors.email}
+                  aria-describedby={errors.email ? 'email-error' : undefined}
                 />
+                {errors.email && (
+                  <p id="email-error" className="flex items-center gap-1 text-red-400 text-xs mt-1">
+                    <FaExclamationCircle className="w-3 h-3" />
+                    {errors.email}
+                  </p>
+                )}
               </div>
 
               <div>
-                <label className="block text-sm text-gray-400 mb-2">Message</label>
+                <label htmlFor="message" className="block text-sm text-gray-400 mb-2">Message</label>
                 <textarea
+                  id="message"
                   value={formData.message}
-                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  onChange={(e) => { setFormData({ ...formData, message: e.target.value }); if (errors.message) setErrors({ ...errors, message: '' }); }}
                   rows={4}
-                  className="w-full px-4 py-3 rounded-xl bg-cyber-gray border border-cyber-border text-white placeholder-gray-500 focus:border-neon-cyan focus:outline-none focus:ring-1 focus:ring-neon-cyan/50 transition-all resize-none"
-                  placeholder="Your message..."
+                  className={`w-full px-4 py-3 rounded-xl bg-cyber-gray border text-white placeholder-gray-500 focus:outline-none focus:ring-1 transition-all resize-none ${errors.message ? 'border-red-500 focus:border-red-500 focus:ring-red-500/50' : 'border-cyber-border focus:border-neon-cyan focus:ring-neon-cyan/50'}`}
+                  placeholder="Your message... (min 10 characters)"
                   required
+                  aria-invalid={!!errors.message}
+                  aria-describedby={errors.message ? 'message-error' : undefined}
                 />
+                {errors.message && (
+                  <p id="message-error" className="flex items-center gap-1 text-red-400 text-xs mt-1">
+                    <FaExclamationCircle className="w-3 h-3" />
+                    {errors.message}
+                  </p>
+                )}
               </div>
 
               <button

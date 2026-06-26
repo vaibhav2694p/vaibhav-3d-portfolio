@@ -157,7 +157,22 @@ export default function GitHubProjects() {
                 href={repo.html_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="project-card glass-card-hover p-6 group hoverable flex flex-col h-full"
+                className="project-card tilt-card glass-card-hover p-6 group hoverable flex flex-col h-full"
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = e.clientX - rect.left;
+                  const y = e.clientY - rect.top;
+                  const centerX = rect.width / 2;
+                  const centerY = rect.height / 2;
+                  const rotateX = ((y - centerY) / centerY) * -5;
+                  const rotateY = ((x - centerX) / centerX) * 5;
+                  e.currentTarget.style.setProperty('--tilt-rotate-x', `${rotateX}deg`);
+                  e.currentTarget.style.setProperty('--tilt-rotate-y', `${rotateY}deg`);
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.setProperty('--tilt-rotate-x', '0deg');
+                  e.currentTarget.style.setProperty('--tilt-rotate-y', '0deg');
+                }}
               >
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-2">

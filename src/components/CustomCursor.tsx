@@ -1,54 +1,55 @@
 import { useEffect, useRef } from 'react';
-import { useMousePosition } from '../hooks/useMousePosition';
+import gsap from 'gsap';
+
+const isTouchDevice = () => window.matchMedia('(pointer: coarse)').matches;
 
 export default function CustomCursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
-  const mousePos = useMousePosition();
+  const posRef = useRef({ x: 0, y: 0 });
   const isHovering = useRef(false);
 
   useEffect(() => {
+    if (isTouchDevice()) return;
+
     const dot = dotRef.current;
     const ring = ringRef.current;
     if (!dot || !ring) return;
 
-    dot.style.left = `${mousePos.x}px`;
-    dot.style.top = `${mousePos.y}px`;
-
-    // Smooth ring follow with delay
-    const ringX = parseFloat(ring.style.left || '0') || mousePos.x;
-    const ringY = parseFloat(ring.style.top || '0') || mousePos.y;
-    const newRingX = ringX + (mousePos.x - ringX) * 0.15;
-    const newRingY = ringY + (mousePos.y - ringY) * 0.15;
-    ring.style.left = `${newRingX}px`;
-    ring.style.top = `${newRingY}px`;
-  }, [mousePos]);
-
-  useEffect(() => {
-    const handleMouseEnter = () => {
-      isHovering.current = true;
-      ringRef.current?.classList.add('hover');
+    const handleMove = (e: MouseEvent) => {
+      posRef.current = { x: e.clientX, y: e.clientY };
+      gsap.to(dot, { x: e.clientX, y: e.clientY, duration: 0, ease: 'power2.out' });
+      gsap.to(ring, { x: e.clientX, y: e.clientY, duration: 0.4, ease: 'power2.out' });
     };
-    const handleMouseLeave = () => {
+
+    const handleEnter = () => {
+      isHovering.current = true;
+      gsap.to(dot, { scale: 2, duration: 0.3, ease: 'power2.out' });
+      gsap.to(ring, { scale: 1.5, borderColor: 'rgba(0, 212, 255, 0.8)', backgroundColor: 'rgba(0, 212, 255, 0.1)', duration: 0.3, ease: 'power2.out' });
+    };
+
+    const handleLeave = () => {
       isHovering.current = false;
-      ringRef.current?.classList.remove('hover');
+      gsap.to(dot, { scale: 1, duration: 0.3, ease: 'power2.out' });
+      gsap.to(ring, { scale: 1, borderColor: 'rgba(0, 212, 255, 0.5)', backgroundColor: 'transparent', duration: 0.3, ease: 'power2.out' });
     };
 
     const addListeners = () => {
-      const interactiveElements = document.querySelectorAll('a, button, [role="button"], input, textarea, select, .hoverable');
-      interactiveElements.forEach((el) => {
-        el.addEventListener('mouseenter', handleMouseEnter);
-        el.addEventListener('mouseleave', handleMouseLeave);
+      const items = document.querySelectorAll('a, button, [role="button"], input, textarea, select, .hoverable');
+      items.forEach((el) => {
+        el.addEventListener('mouseenter', handleEnter);
+        el.addEventListener('mouseleave', handleLeave);
       });
-      return interactiveElements;
+      return items;
     };
 
+    window.addEventListener('mousemove', handleMove);
     let elements = addListeners();
 
     const observer = new MutationObserver(() => {
       elements.forEach((el) => {
-        el.removeEventListener('mouseenter', handleMouseEnter);
-        el.removeEventListener('mouseleave', handleMouseLeave);
+        el.removeEventListener('mouseenter', handleEnter);
+        el.removeEventListener('mouseleave', handleLeave);
       });
       elements = addListeners();
     });
@@ -56,13 +57,16 @@ export default function CustomCursor() {
     observer.observe(document.body, { childList: true, subtree: true });
 
     return () => {
+      window.removeEventListener('mousemove', handleMove);
       observer.disconnect();
       elements.forEach((el) => {
-        el.removeEventListener('mouseenter', handleMouseEnter);
-        el.removeEventListener('mouseleave', handleMouseLeave);
+        el.removeEventListener('mouseenter', handleEnter);
+        el.removeEventListener('mouseleave', handleLeave);
       });
     };
   }, []);
+
+  if (isTouchDevice()) return null;
 
   return (
     <>

@@ -15,18 +15,19 @@ export default function WorkExperience() {
     const ctx = gsap.context(() => {
       const cards = sectionRef.current!.querySelectorAll('.timeline-card');
       cards.forEach((card, i) => {
+        const direction = i % 2 === 0;
         gsap.fromTo(
           card,
-          { opacity: 0, x: i % 2 === 0 ? -50 : 50 },
+          { opacity: 0, x: direction ? -50 : 50, rotateY: direction ? -5 : 5 },
           {
             opacity: 1,
             x: 0,
+            rotateY: 0,
             duration: 0.8,
             ease: 'power3.out',
             scrollTrigger: {
               trigger: card,
               start: 'top 85%',
-              toggleActions: 'play none none none',
             },
           }
         );
@@ -45,7 +46,24 @@ export default function WorkExperience() {
             scrollTrigger: {
               trigger: dot,
               start: 'top 85%',
-              toggleActions: 'play none none none',
+            },
+          }
+        );
+      });
+
+      const lines = sectionRef.current!.querySelectorAll('.timeline-line');
+      lines.forEach((line) => {
+        gsap.fromTo(
+          line,
+          { scaleY: 0 },
+          {
+            scaleY: 1,
+            duration: 0.8,
+            ease: 'power3.out',
+            transformOrigin: 'top center',
+            scrollTrigger: {
+              trigger: line,
+              start: 'top 85%',
             },
           }
         );
@@ -57,7 +75,7 @@ export default function WorkExperience() {
 
   return (
     <section id="experience" ref={sectionRef} className="section-container">
-      <div className="max-w-5xl">
+      <div className="max-w-5xl mx-auto">
         <div className="mb-4">
           <span className="text-neon-cyan text-sm font-mono font-medium tracking-wider uppercase">Career</span>
         </div>
@@ -66,16 +84,13 @@ export default function WorkExperience() {
         </h2>
 
         <div className="relative">
-          {/* Timeline line */}
-          <div className="absolute left-4 lg:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-neon-cyan via-neon-blue to-neon-purple lg:-translate-x-1/2" />
+          <div className="absolute left-4 lg:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-neon-cyan via-neon-blue to-neon-purple lg:-translate-x-1/2 timeline-line origin-top" />
 
           <div className="space-y-12">
             {WORK_EXPERIENCE.map((job, index) => (
-              <div key={index} className={`relative flex flex-col lg:flex-row gap-8 ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'}`}>
-                {/* Timeline dot */}
+              <div key={index} className="relative flex flex-col lg:flex-row gap-8">
                 <div className="timeline-dot absolute left-4 lg:left-1/2 w-4 h-4 rounded-full bg-neon-cyan border-4 border-cyber-black shadow-[0_0_10px_rgba(0,212,255,0.5)] lg:-translate-x-1/2 z-10 mt-2" />
 
-                {/* Content */}
                 <div className={`timeline-card ml-12 lg:ml-0 lg:w-1/2 ${index % 2 === 0 ? 'lg:pr-12 lg:text-right' : 'lg:pl-12'}`}>
                   <div className={`glass-card-hover p-6 lg:p-8 ${index % 2 === 0 ? 'lg:items-end' : ''} flex flex-col`}>
                     <div className={`flex items-center gap-2 mb-3 ${index % 2 === 0 ? 'lg:flex-row-reverse' : ''}`}>
@@ -110,7 +125,6 @@ export default function WorkExperience() {
                   </div>
                 </div>
 
-                {/* Spacer for the other side */}
                 <div className="hidden lg:block lg:w-1/2" />
               </div>
             ))}

@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FaGithub, FaLinkedin, FaBars, FaTimes } from 'react-icons/fa';
 import { PROFILE } from '../data/profileData';
+import gsap from 'gsap';
 
 const navLinks = [
   { label: 'About', href: '#about' },
@@ -15,6 +16,8 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('');
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const linksRef = useRef<(HTMLAnchorElement | null)[]>([]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,6 +47,40 @@ export default function Navbar() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    if (!overlayRef.current) return;
+
+    if (mobileOpen) {
+      gsap.to(overlayRef.current, {
+        y: 0,
+        opacity: 1,
+        duration: 0.4,
+        ease: 'power3.out',
+        onStart: () => {
+          overlayRef.current!.style.pointerEvents = 'auto';
+        },
+      });
+      linksRef.current.forEach((link, i) => {
+        if (link) {
+          gsap.fromTo(link,
+            { opacity: 0, y: 30 },
+            { opacity: 1, y: 0, duration: 0.4, delay: 0.1 + i * 0.05, ease: 'power3.out' }
+          );
+        }
+      });
+    } else {
+      gsap.to(overlayRef.current, {
+        y: '-100%',
+        opacity: 0,
+        duration: 0.4,
+        ease: 'power3.in',
+        onComplete: () => {
+          overlayRef.current!.style.pointerEvents = 'none';
+        },
+      });
+    }
+  }, [mobileOpen]);
+
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setMobileOpen(false);
@@ -63,7 +100,6 @@ export default function Navbar() {
     >
       <div className="w-full px-6 sm:px-8 lg:px-16 xl:px-24">
         <div className="flex items-center justify-between h-16 lg:h-20">
-          {/* Logo */}
           <a
             href="#"
             className="text-xl lg:text-2xl font-bold tracking-tight hoverable"
@@ -76,7 +112,6 @@ export default function Navbar() {
             <span className="text-white/80">.</span>
           </a>
 
-          {/* Desktop Nav */}
           <div className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (
               <a
@@ -97,7 +132,6 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Social + Mobile toggle */}
           <div className="flex items-center gap-4">
             <a
               href={PROFILE.github}
@@ -128,20 +162,20 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       <div
-        className={`lg:hidden absolute top-full left-0 right-0 bg-cyber-black/95 backdrop-blur-xl border-b border-cyber-border/50 transition-all duration-300 ${
-          mobileOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
-        }`}
+        ref={overlayRef}
+        className="lg:hidden fixed inset-0 top-0 bg-cyber-black/95 backdrop-blur-2xl flex flex-col items-center justify-center -translate-y-full opacity-0"
+        style={{ pointerEvents: 'none', zIndex: -1 }}
       >
-        <div className="px-6 py-6 flex flex-col gap-4">
-          {navLinks.map((link) => (
+        <div className="flex flex-col items-center gap-8">
+          {navLinks.map((link, i) => (
             <a
               key={link.href}
+              ref={(el) => { linksRef.current[i] = el; }}
               href={link.href}
               onClick={(e) => handleClick(e, link.href)}
-              className={`text-lg font-medium transition-colors hoverable ${
-                activeSection === link.href ? 'text-neon-cyan' : 'text-gray-400'
+              className={`text-2xl font-bold transition-colors hoverable ${
+                activeSection === link.href ? 'text-neon-cyan' : 'text-gray-400 hover:text-white'
               }`}
             >
               {link.label}

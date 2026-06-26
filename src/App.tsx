@@ -2,6 +2,7 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
+import ErrorBoundary from './components/ErrorBoundary';
 import CustomCursor from './components/CustomCursor';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -41,7 +42,7 @@ function App() {
   }, []);
 
   return (
-    <>
+    <ErrorBoundary>
       {loading && <LoadingScreen onFinish={() => setLoading(false)} />}
 
       <div className={`relative min-h-screen bg-cyber-black text-white overflow-x-hidden transition-opacity duration-500 ${loading ? 'opacity-0' : 'opacity-100'}`}>
@@ -83,7 +84,7 @@ function App() {
           <div className="absolute top-1/2 left-0 w-[300px] h-[300px] bg-neon-blue/5 rounded-full blur-3xl" />
         </div>
       </div>
-    </>
+    </ErrorBoundary>
   );
 }
 
